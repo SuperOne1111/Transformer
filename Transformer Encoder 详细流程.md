@@ -5,7 +5,7 @@
 - **输入**：自然语言文本（如句子）。
 - **分词**：通过分词算法（如BPE、WordPiece）将文本拆分为Token序列。
 - **映射为ID**：将Token转换为词汇表中的整数ID。
-- **词向量映射**：通过Embedding层将ID转为词向量，组成初始矩阵 $X$（形状：序列长度, 模型维度 $d_{model}$）。
+- **词向量映射**：通过Embedding层将ID转为词向量，组成初始矩阵 $X$（形状：（序列长度, 模型维度 $d_{model}$））。
 - **位置编码**：对 $X$ 添加位置编码（Positional Encoding），得到最终的输入矩阵：
   \[
   X = $\text{Embedding}$($\text{Token}$ ) + $\text{PositionalEncoding}$
