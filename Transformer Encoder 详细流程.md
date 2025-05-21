@@ -36,9 +36,9 @@
    $A_{\text{softmax}}  = \text{Softmax}(A)$
  
 - 加权求和得到输出：
-  $$
-  \text{Output}_{\text{attention}} = A_{\text{softmax}} \cdot V
-  $$
+  
+  $\text{Output}_{\text{attention}} = A_{\text{softmax}}\cdotV$
+  
 
 #### (4) 残差连接 & 层归一化
 - 残差连接：
