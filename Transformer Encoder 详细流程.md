@@ -36,8 +36,9 @@
    $A_{\text{softmax}}  = \text{Softmax}(A)$
  
 - 加权求和得到输出：
+ 
+  $Output_{\text{attention}}= A_{\text{softmax}} \cdot V$
   
-  $\text{Output}_{\text{attention}} = A_{\text{softmax}}\cdotV$
   
 
 #### (4) 残差连接 & 层归一化
@@ -57,13 +58,13 @@
 $$
 \text{Intermediate} = \text{ReLU}(Z_{\text{norm}} \cdot W_1 + b_1)
 $$
-- $W_1$ 形状：$d_{model}, d_{ff}$（如 $d_{ff}=2048$），$b_1$ 形状 $d_{ff}$。
+- $W_1$ 形状：$d_{\text{model}}, d_{ff}$（如 $d_{\text{ff}}$=2048），$b_1$ 形$d_{\text{ff}}$。
 
 #### (2) 第二层（降维）
 $$
-\text{FFN}(Z_{\text{norm}}) = \text{Intermediate} \cdot W_2 + b_2
+FFN(Z_{\text{norm}}) = \text{Intermediate} \cdot W_2 + b_2
 $$
-- $W_2$ 形状：$d_{ff}, d_{model}$，$b_2$ 形状 $d_{model}$。
+- $W_2$ 形状：$d_{ff}$, $d_{model}$，$b_2$ 形状 $d_{model}$。
 
 #### (3) 残差连接 & 层归一化
 $$
