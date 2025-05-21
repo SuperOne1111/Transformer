@@ -58,26 +58,26 @@
 $$
 \text{Intermediate} = \text{ReLU}(Z_{\text{norm}} \cdot W_1 + b_1)
 $$
-- $W_1$ 形状：$`d_{model}`$, $d_{ff}$（如 $d_{\text{ff}}$=2048），$`b_1`$ 形$`d_{\text{ff}}`$。
+- $W_1$ 形状：[$`d_{model}`$, $d_{ff}$]（如 $d_{\text{ff}}$=2048），$`b_1`$ 形状[$`d_{\text{ff}}`$]。
 
 #### (2) 第二层（降维）
 $$
 FFN(Z_{\text{norm}}) = \text{Intermediate} \cdot W_2 + b_2
 $$
-- $W_2$ 形状：$`d_{ff}`$, $d_{model}$，$`b_2`$ 形状 $d_{model}$。
+- $W_2$ 形状：[$`d_{ff}`$, $d_{model}$]，$`b_2`$ 形状 [$`d_{model}`$]。
 
 #### (3) 残差连接 & 层归一化
 $$
-Output_{\text{FFN}} = \text{LayerNorm}(Z_{\text{norm}} + \text{FFN}(Z_{\text{norm}}))
+Output_{\text{FFN}} = LayerNorm(Z_{\text{norm}} + FFN(Z_{\text{norm}}))
 $$
 
 ---
 
 ## 3. 输出
-- 重复N次Encoder Layer后，得到最终的上下文感知表示：
-  $$
-  Encoder Output= [\text{Output}_{\text{FFN}}]_N
-  $$
+- 重复N次Encoder Layer后，得到最终的上下文感知表示矩阵：
+  
+  $`Encoder Output=[Output_{FFN}]N`$
+  
 
 ---
 
