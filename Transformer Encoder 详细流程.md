@@ -20,7 +20,7 @@
   
   $$Q = X  \cdot  W_Q^T, \quad K = X \cdot W_K^T, \quad V = X \cdot W_V^T$$
  
-  - 权重矩阵 $W_Q$, $W_K$, $W_V$ 形状为 $[d_{model}, d_k]$（单头注意力时 $d_k = d_{model}$）。
+  - 权重矩阵 $W_Q$, $W_K$, $W_V$ 形状为 $[d_{model}, d_k]$（单头注意力时 $d_k = d_{model}$，多头时$`d_k = d_v=d_{model}/h`$,h是头的个数）。
   - 若为**多头注意力**，每个头有独立的 $W_Q^i$, $W_K^i$, $W_V^i$，输出拼接后通过 $W_O$ 融合。
 
 #### (2) 缩放点积注意力
