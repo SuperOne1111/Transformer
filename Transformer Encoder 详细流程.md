@@ -54,7 +54,7 @@
 ---
 
 ### 2.2 前馈神经网络（FFN）
-#### (1) 第一层（升维 + ReLU）
+#### (1) 第一层（升维 + 激活函数ReLU作为样例）
 $$
 \text{Intermediate} = \text{ReLU}(Z_{\text{norm}} \cdot W_1 + b_1)
 $$
