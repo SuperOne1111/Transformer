@@ -102,4 +102,4 @@ graph TD
     F --> G[FFN: ReLU → 线性层]
     G --> H[残差连接 + LayerNorm]
     H --> I[输出]
-```# Transformer
+```
