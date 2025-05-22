@@ -130,10 +130,10 @@ T_{\text{new}} &= \text{LayerNorm}( \text{CrossAttention} + T )
 
 ## 前馈神经网络（FFN）
 ### 网络结构
-$`
+```math
 \text{FFN}(x) = \text{ReLU}(xW_1 + b_1)W_2 + b_2 \\
 W_1 \in \mathbb{R}^{d_{\text{model}} \times d_{\text{ff}}}, \quad W_2 \in \mathbb{R}^{d_{\text{ff}} \times d_{\text{model}}}
-`$
+```
 其中 $d_{\text{ff}}$ 通常为 $4 \times d_{\text{model}}$
 
 ### 残差连接
@@ -179,14 +179,29 @@ $$
 ## 训练阶段
 
 ### 交叉熵损失计算
+交叉熵损失计算（假设是平均损失）
 $$\mathcal{L} = -\frac{1}{n} \sum_{t=1}^n \log P_{\text{token}}[t, y_t^*]
 $$
+  - $n$：序列长度  
+  - $y_t^*$ ：第 \( t \) 步的真实 token（Ground Truth）  
+  - $P_{\text{tokens}}[t, y_t^*]$ ：模型对真实 token 的预测概率
 
 **梯度计算**：  
-交叉熵损失计算（假设是平均损失）
-```math
-\mathcal{L} = -\frac{1}{n} \sum_{t=1}^n \log P_{\text{token}}[t, y_t^*]
-```
+
+1. **反向传播**：  
+   - 计算损失 \( L \) 对模型参数 \( \theta \) 的梯度：  
+ ```math
+     \nabla_\theta L = -\frac{1}{n} \sum_{t=1}^{n} \nabla_\theta \log P_{\text{tokens}}[t, y_t^*]
+``` 
+   - 梯度方向指示参数更新的方向。  
+
+2. **参数更新**：  
+   - 使用优化器（如 Adam）更新参数：  
+ ```math
+     \theta \leftarrow \theta - \eta \cdot \nabla_\theta L
+``` 
+$\eta$ ：学习率  
+
 
 ## 推理阶段
 
