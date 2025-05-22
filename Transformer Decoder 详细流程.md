@@ -193,11 +193,19 @@ $$
 ### 自回归生成流程
 1. **初始化**  
    $`y_0 = \text{[<START>]} `$,$`H_0 \in \mathbb{R}^{1 \times d_{\text{model}}}`$
-3. **迭代步骤**（第$t$步）：
+3. **迭代步骤**（第$`t`$步）：
 即新预测的token加入目标序列，然后继续下一轮预测
-   $$input &: y_{0:t-1}
-  update &: H_t = Decoder(y_{0:t-1})
-   Logits_t &= H_t[-1,:] W_{\text{vocab}} \quad \in \mathbb{R}^V$$
+- **输入序列**：  
+  $y_{0:t-1} $
+- **更新隐藏状态**：  
+  $H_t = \text{Decoder}(y_{0:t-1}) $ 
+- **计算 logits**：  
+  $\text{Logits} = H_t[-1,:] \, W_{\text{vocab}} \in \mathbb{R}^V $  
+- **采样下一个 token**：  
+  $y_t \sim \text{softmax}(\text{Logits})$  
+  （可通过贪心、随机采样等方式）  
+- **更新序列**：  
+  $y_{0:t} = [y_{0:t-1}, y_t] $  
 
 
 5. **终止条件**  
