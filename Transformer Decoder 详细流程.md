@@ -73,9 +73,7 @@ $`
 
 ### 多头拆分
 将Q/K/V通过线性投影拆分为$`h`$个头：
-$`
-\text{Head}_i = \text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)
-`$
+$$\text{Head}_i = \text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)$$
 - 投影矩阵维度：  
   $W_i^Q, W_i^K \in \mathbb{R}^{d_{\text{model}} \times d_k}$  
   $W_i^V \in \mathbb{R}^{d_{\text{model}} \times d_v}$  
@@ -87,10 +85,8 @@ $`
 ### 2.1 多头合并机制
 
 #### 拼接与投影
-1. **拼接（Concatenation）**：
-   $`
-   \text{MultiHead}(Q,K,V) = \text{Concat}(\text{Head}_1, \ldots, \text{Head}_h) W^O
-   `$
+1. **拼接（Concatenation）**：\
+   $$MultiHead(Q,K,V) = Concat(Head_1, \ldots, Head_h) W^O$$
    - 投影权重矩阵 $W^O \in \mathbb{R}^{h \cdot d_v \times d_{\text{model}}}$  
    - 输出维度恢复为 `[batch_size, seq_len, d_model]`
 
@@ -104,10 +100,12 @@ $`
 ---
 
 ### 残差连接与层归一化
-$$
-T_new = LayerNorm( Attention(Q, K, V) + T )
-$$
-*多头情形* $$ T_{new} = LayerNorm( MultiHead(Q, K, V) + T ) $$ 
+```math 
+T_{new} = LayerNorm( Attention(Q, K, V) + T )
+```
+
+*多头情形* 
+$`T_{new} = LayerNorm( MultiHead(Q, K, V) + T ) `$ 
 
 ## Encoder-Decoder 交叉注意力
 对于Decoder-Only模型无此步骤。
@@ -155,15 +153,12 @@ $`
 
 ### 1. 输出层计算
 - **输入隐藏状态**  
-  $H \in \mathbb{R}^{n \times d_{\text{model}}}$  
-  （$n$: 当前序列长度，$d_{\text{model}}$: 模型维度）
+  $`H \in \mathbb{R}^{n \times d_{\text{model}}}`$  （$`n`$: 当前序列长度，$`d_{\text{model}}`$: 模型维度）
 
 - **词表空间投影**  
-  $$
-  \text{Logits} = H W_{\text{vocab}}, \quad W_{\text{vocab}} \in \mathbb{R}^{d_{\text{model}} \times V}
-  $$  
+  $$\text{Logits} = H W_{\text{vocab}}, \quad W_{\text{vocab}} \in \mathbb{R}^{d_{\text{model}} \times V}$$  
   **形状变换**：  
-  $(n \times d_{\text{model}}) \times (d_{\text{model}} \times V) \rightarrow \mathbb{R}^{n \times V}$
+  $$(n \times d_{\text{model}}) \times (d_{\text{model}} \times V) \rightarrow \mathbb{R}^{n \times V}$$
 
 ### 2. 概率归一化
 $$
@@ -175,44 +170,35 @@ $$
 
 ### 3. 条件概率输出
 - **联合概率分解**  
-  $$
-  p(y_{1:n}) = \prod_{t=1}^n p(y_t|y_{<t})
-  $$
+  $$p(y_{1:n}) = \prod_{t=1}^n p(y_t|y_{<t})$$
 
 - **当前步预测**  
-  $$
-  \boxed{p(y_t|y_{<t}) = P_{\text{token}}[t,:] \in \mathbb{R}^V}
-  $$
+  $$\boxed{p(y_t|y_{<t}) = P_{\text{token}}[t,:] \in \mathbb{R}^V}$$
   依照当前步预测的概率分布，根据采样或过滤算法选择下一个 token
 
 ## 训练阶段
 
 ### 交叉熵损失计算
-$$
-\mathcal{L} = -\frac{1}{n} \sum_{t=1}^n \log P_{\text{token}}[t, y_t^*]
+$$\mathcal{L} = -\frac{1}{n} \sum_{t=1}^n \log P_{\text{token}}[t, y_t^*]
 $$
 
 **梯度计算**：  
 交叉熵损失计算（假设是平均损失）
-$$
+```math
 \mathcal{L} = -\frac{1}{n} \sum_{t=1}^n \log P_{\text{token}}[t, y_t^*]
-$$
+```
 
 ## 推理阶段
 
 ### 自回归生成流程
 1. **初始化**  
-   $y_0 = \text{[<START>]},\quad H_0 \in \mathbb{R}^{1 \times d_{\text{model}}}$
+   $`y_0 = \text{[<START>]} `$,$`H_0 \in \mathbb{R}^{1 \times d_{\text{model}}}`$
+3. **迭代步骤**（第$t$步）：
+即新预测的token加入目标序列，然后继续下一轮预测
+   $$input &: y_{0:t-1}
+  update &: H_t = Decoder(y_{0:t-1})
+   Logits_t &= H_t[-1,:] W_{\text{vocab}} \quad \in \mathbb{R}^V$$
 
-2. **迭代步骤**（第$t$步）：
-   $$
-   \begin{aligned}
-   \text{输入序列} &：y_{0:t-1} \\
-   \text{更新隐藏状态} &：H_t = \text{Decoder}(y_{0:t-1}) \\
-   \text{Logits}_t &= H_t[-1,:] W_{\text{vocab}} \quad \in \mathbb{R}^V 
-   \end{aligned}
-   $$
-   即新预测的token加入目标序列，然后继续下一轮预测
 
-3. **终止条件**  
-   $y_t = \text{<END>}$ 或 $t \geq t_{\text{max}}$
+5. **终止条件**  
+   $y_t = \text{<END>}$ 或 $`t \geq t_{\text{max}}`$
